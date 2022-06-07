@@ -31,6 +31,19 @@ class TaskModel extends Task {
     );
   }
 
+  factory TaskModel.fromLocalJson(Map<dynamic, dynamic> json) {
+    return TaskModel(
+      id: json['id'] as String?,
+      name: json['name'] as String?,
+      desc: json['desc'] as String?,
+      createAt:
+      json['createdAt'] == null ? null : DateTime.parse(json['createdAt'] as String).toLocal(),
+      expiredAt:
+      json['expiredAt'] == null ? null : DateTime.parse(json['expiredAt'] as String).toLocal(),
+      status: json['status'] == null ? null : json['status'] as String?,
+    );
+  }
+
   factory TaskModel.fromModel(Task? model) {
     return TaskModel(
       id: model?.id,

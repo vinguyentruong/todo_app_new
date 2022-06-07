@@ -13,15 +13,30 @@ import 'todo_state.dart';
 @Injectable()
 class TodoCubit extends Cubit<TodoState> with EventBusMixin {
   TodoCubit(this._taskRepository) : super(const TodoState()) {
-    listenEvent<OnCreateTaskEvent>((_) => _fetchTasks());
-    listenEvent<OnUpdateTaskEvent>((_) => _fetchTasks());
-    listenEvent<OnDeleteTaskEvent>((_) => _fetchTasks());
+    listenEvent<OnCreateTaskEvent>((_) => _getTasks());
+    listenEvent<OnUpdateTaskEvent>((_) => _getTasks());
+    listenEvent<OnDeleteTaskEvent>((_) => _getTasks());
   }
 
   TaskRepository _taskRepository;
 
   Future<void> initData() async {
-    _fetchTasks();
+    _getTasks();
+  }
+
+  Future<void> _getTasks() async {
+    emit(state.copyWith(dataStatus: DataSourceStatus.loading));
+    try {
+      final result = await _taskRepository.getCachedTasks();
+      if (result != null) {
+        emit(state.copyWith(task: result, dataStatus: DataSourceStatus.refreshing));
+      } else {
+        emit(state.copyWith(dataStatus: DataSourceStatus.failed));
+      }
+      await _fetchTasks();
+    } catch (e) {
+      emit(state.copyWith(dataStatus: DataSourceStatus.failed));
+    }
   }
 
   Future<void> _fetchTasks() async {
@@ -56,6 +71,7 @@ class TodoCubit extends Cubit<TodoState> with EventBusMixin {
             status: RequestStatus.success,
           dataStatus: (newTasks?.isNotEmpty ?? false) ? DataSourceStatus.success : DataSourceStatus.empty
         ));
+        shareEvent(OnDeleteTaskEvent(task));
       } else {
         emit(state.copyWith(status: RequestStatus.failed, message: result.message,));
       }
@@ -81,7 +97,7 @@ class TodoCubit extends Cubit<TodoState> with EventBusMixin {
       final result = await _taskRepository.updateTask(newTask);
       if (result is DataSuccess) {
         emit(state.copyWith(status: RequestStatus.success, message: result.message));
-        _fetchTasks();
+        await _fetchTasks();
         shareEvent(OnUpdateTaskEvent(task));
       } else {
         emit(state.copyWith(status: RequestStatus.failed, message: result.message));

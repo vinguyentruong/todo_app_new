@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -10,23 +9,8 @@ import '../generated/l10n.dart';
 import '../routes/app_routes.dart';
 import 'main/main_page.dart';
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
-
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  @override
-  void initState() {
-    _initFirebaseDatabase();
-    super.initState();
-  }
-
-  void _initFirebaseDatabase() {
-    FirebaseDatabase database = FirebaseDatabase.instance;
-  }
 
   @override
   Widget build(BuildContext context) {

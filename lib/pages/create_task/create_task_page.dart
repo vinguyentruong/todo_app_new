@@ -49,6 +49,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       Text('Name'),
                       const TitleSpacing(),
                       TextFormField(
+                        key: Key('TaskName'),
                         initialValue: task?.name,
                         onChanged: (text) => context
                             .read<CreateTaskBloc>()
@@ -63,6 +64,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
                       Text('Description'),
                       const TitleSpacing(),
                       TextFormField(
+                        key: Key('TaskDesc'),
                         initialValue: task?.desc,
                         onChanged: (text) => context
                             .read<CreateTaskBloc>()

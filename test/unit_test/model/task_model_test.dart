@@ -3,7 +3,7 @@ import 'package:todo_app/data/task/response_models/task_model.dart';
 import 'package:todo_app/models/task.dart';
 
 void main() {
-  group('The task model should be parse from json', () {
+  group('Test get task model from json', () {
     test('The task item should be parse from json', () {
       final json = {
         "123": {
